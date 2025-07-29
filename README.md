@@ -1,6 +1,6 @@
-# Snaproom React - Feature-Sliced Design Architecture
+# Snaproom React - Feature-Sliced Design Architecture with TypeScript
 
-A React application built using the Feature-Sliced Design (FSD) methodology for better code organization, maintainability, and scalability.
+A React application built using **TypeScript** and the Feature-Sliced Design (FSD) methodology for better code organization, maintainability, scalability, and type safety.
 
 ## 🏗️ Feature-Sliced Design Overview
 
@@ -21,31 +21,36 @@ src/
 ├── app/                    # Application layer
 │   ├── config/            # Global configuration
 │   ├── model/             # Global state and business logic
-│   └── index.js           # App entry point
+│   └── index.tsx          # App entry point
 ├── pages/                 # Pages layer
 │   ├── home/              # Home page slice
+│   │   └── index.tsx      # Home page component
 │   ├── login/             # Login page slice
-│   └── index.js           # Routing configuration
+│   │   └── index.tsx      # Login page component
+│   └── index.tsx          # Routing configuration
 ├── widgets/               # Widgets layer
 │   └── auth-widget/       # Authentication widget
 │       ├── ui/            # Widget components
-│       └── model/         # Widget logic
+│       ├── model/         # Widget logic
+│       └── index.tsx      # Widget entry point
 ├── features/              # Features layer
 │   └── auth/              # Authentication feature slice
-│       ├── ui/            # Feature components
-│       ├── model/         # Feature business logic
-│       ├── api/           # Feature API calls
-│       └── lib/           # Feature utilities
+│       ├── ui/            # Feature components (.tsx)
+│       ├── model/         # Feature business logic (.tsx)
+│       ├── api/           # Feature API calls (.tsx)
+│       ├── lib/           # Feature utilities (.ts)
+│       └── index.tsx      # Public API
 ├── entities/              # Entities layer
 │   └── user/              # User entity slice
-│       ├── ui/            # Entity components
-│       ├── model/         # Entity business logic
-│       └── api/           # Entity API calls
+│       ├── ui/            # Entity components (.tsx)
+│       ├── model/         # Entity business logic (.ts)
+│       ├── api/           # Entity API calls (.tsx)
+│       └── index.tsx      # Public API
 └── shared/                # Shared layer
-    ├── ui/                # Reusable UI components
-    ├── api/               # Common API utilities
-    ├── lib/               # Shared utilities
-    └── config/            # Shared configuration
+    ├── ui/                # Reusable UI components (.tsx)
+    ├── api/               # Common API utilities (.tsx)
+    ├── lib/               # Shared utilities (.ts)
+    └── config/            # Shared configuration (.ts)
 ```
 
 ## 🔄 Layers Explained
@@ -110,47 +115,62 @@ Here's how the authentication feature is structured across FSD layers:
 ```
 auth/
 ├── ui/
-│   └── login-form.js      # Login form component
+│   └── login-form.tsx     # Login form component
 ├── model/
-│   └── use-auth.js        # Authentication logic hook
+│   └── use-auth.tsx       # Authentication logic hook
 ├── api/
-│   └── auth-api.js        # Authentication API calls
-└── index.js               # Public API
+│   └── auth-api.tsx       # Authentication API calls
+└── index.tsx              # Public API
 ```
 
 ### Entity Layer (`src/entities/user/`)
 ```
 user/
 ├── ui/
-│   └── user-card.js       # User display component
+│   └── user-card.tsx      # User display component
 ├── api/
-│   └── user-api.js        # User data API calls
-└── index.js               # Public API
+│   └── user-api.tsx       # User data API calls
+└── index.tsx              # Public API
 ```
 
 ### Widget Layer (`src/widgets/auth-widget/`)
 ```
 auth-widget/
 ├── ui/
-│   └── auth-widget.js     # Composite auth component
-└── index.js               # Public API
+│   └── auth-widget.tsx    # Composite auth component
+└── index.tsx              # Public API
 ```
 
 ### Shared Layer (`src/shared/`)
 ```
 shared/
 ├── ui/
-│   ├── button.js          # Generic button component
-│   └── input.js           # Generic input component
+│   ├── button.tsx         # Generic button component
+│   └── input.tsx          # Generic input component
 └── api/
-    └── index.js           # API client utilities
+    └── index.tsx          # API client utilities
 ```
+
+## 🎯 TypeScript Configuration
+
+This project is fully configured with TypeScript to provide:
+- **Type Safety**: Compile-time error checking and better IDE support
+- **Strict Mode**: Enhanced type checking for better code quality
+- **Interface Definitions**: Clear contracts for component props and API responses
+- **Generic Types**: Reusable type-safe utilities
+
+### Key TypeScript Features
+- All React components use `React.FC` typing
+- Comprehensive interfaces for props, state, and API responses
+- Generic API client methods for type-safe HTTP requests
+- Strict TypeScript configuration in `tsconfig.json`
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
+- TypeScript knowledge recommended
 
 ### Installation
 ```bash
@@ -158,32 +178,75 @@ shared/
 git clone <repository-url>
 cd snaproom-react
 
-# Install dependencies
+# Install dependencies (includes TypeScript)
 npm install
 
-# Start development server
+# Start development server with TypeScript compilation
 npm start
 ```
 
 ### Available Scripts
-- `npm start` - Start development server
-- `npm run build` - Build for production
-- `npm test` - Run tests
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+- `npm start` - Start development server with TypeScript hot reload
+- `npm run build` - Build for production with TypeScript compilation
+- `npm test` - Run tests with TypeScript support
+- `npm run lint` - Run ESLint with TypeScript rules
+- `npm run lint:fix` - Fix ESLint issues automatically
 
 ## 📝 Development Guidelines
 
 ### Import Rules
 Follow these import conventions to maintain proper layer dependencies:
 
-```javascript
+```typescript
 // ✅ Correct - importing from lower layers
 import { Button } from '../../../shared/ui';
-import { UserCard } from '../../../entities/user';
+import { UserCard, User } from '../../../entities/user';
 
 // ❌ Incorrect - importing from higher layers
 import { HomePage } from '../../../pages/home';
+```
+
+### TypeScript Development Guidelines
+
+#### Component Type Definitions
+```typescript
+// Define interfaces for component props
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+}
+
+// Use React.FC for functional components
+export const Button: React.FC<ButtonProps> = ({ children, onClick, type = 'button', disabled = false }) => {
+  return (
+    <button type={type} onClick={onClick} disabled={disabled}>
+      {children}
+    </button>
+  );
+};
+```
+
+#### API and Hook Types
+```typescript
+// Define interfaces for API responses
+interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+// Type custom hooks with return type
+interface AuthState {
+  user: User | null;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<User>;
+  logout: () => void;
+}
+
+export const useAuth = (): AuthState => {
+  // Hook implementation
+};
 ```
 
 ### Layer Dependencies
@@ -194,19 +257,25 @@ import { HomePage } from '../../../pages/home';
 - **Shared** should not import from any other layers
 
 ### Naming Conventions
-- Use PascalCase for components: `LoginForm`, `UserCard`
+- Use PascalCase for components and interfaces: `LoginForm`, `UserCard`, `ButtonProps`
 - Use camelCase for hooks and utilities: `useAuth`, `formatDate`
 - Use kebab-case for directories: `auth-widget`, `user-profile`
+- Use `.tsx` extension for files containing JSX
+- Use `.ts` extension for utility files without JSX
 
 ## 🤝 Contributing
 
 1. Follow the FSD methodology when adding new features
 2. Respect layer boundaries and import rules
-3. Write tests for new functionality
-4. Update documentation when necessary
+3. Define TypeScript interfaces for all props and API responses
+4. Use strict type checking and avoid `any` types
+5. Write tests for new functionality
+6. Update documentation when necessary
 
 ## 📚 Further Reading
 
 - [Feature-Sliced Design Documentation](https://feature-sliced.design/)
 - [FSD Examples and Best Practices](https://github.com/feature-sliced/examples)
 - [React Best Practices](https://reactjs.org/docs/thinking-in-react.html)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [React TypeScript Best Practices](https://react-typescript-cheatsheet.netlify.app/)
