@@ -2,6 +2,11 @@
 
 A React application built using **TypeScript** and the Feature-Sliced Design (FSD) methodology for better code organization, maintainability, scalability, and type safety.
 
+## 🌐 Language Support
+
+- [한국어 문서](README-ko.md)
+- [日本語ドキュメント](README-ja.md)
+
 ## 🏗️ Feature-Sliced Design Overview
 
 Feature-Sliced Design is an architectural methodology that provides a standardized way to organize frontend applications. It emphasizes separation of concerns, predictable structure, and maintainable code through a hierarchical approach.
